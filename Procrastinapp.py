@@ -2,6 +2,7 @@ import sqlite3
 import csv
 import pandas.io.sql as sql
 from pandas import *
+import datetime
 
 
 def fromTextToPickle(email,filename):
@@ -25,6 +26,11 @@ def fromTextToPickle(email,filename):
     timeDF.to_pickle(email.split('@')[0] + '_pickle.pkl')
     return timeDF
 
+def dateTimeConversion(unixtime):
+    #converts 17 digit time stamp
+    time = datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=unixtime) 
+    convertedTime = time.isoformat()
+    return convertedTime
 
 
 #newFile = open('cleanHistory.txt', 'w')
