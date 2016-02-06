@@ -13,7 +13,7 @@ def fromTextToPickle(email,filename):
     h = history.cursor()
 
     # goes through and gets the url table from database
-    table = sql.read_frame('select * from urls["url"]',history)
+    table = sql.read_sql('select * from urls["url"]',history)
 
     # reduces table into two columns, time of visit, url
     timeStamps = table[['last_visit_time','url']]
@@ -38,9 +38,10 @@ def dateTimeConversion(unixtime):
 
 
 def main():
-    pass
-
-
+    df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
+    df['last_visit_time'] = df['last_visit_time'].apply(dateTimeConversion)
+    print df
+    
 if __name__=='__main__':
 
     main()
