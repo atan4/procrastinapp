@@ -3,6 +3,8 @@ import csv
 import pandas.io.sql as sql
 from pandas import *
 import datetime
+import html2text
+import urllib
 
 
 def fromTextToPickle(email,filename):
@@ -36,11 +38,19 @@ def dateTimeConversion(unixtime):
     convertedTime = time.isoformat()
     return convertedTime
 
+def getHTML(url):
+    page = urllib.urlopen(url).read()
+    return page
 
 def main():
-    df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
-    df['last_visit_time'] = df['last_visit_time'].apply(dateTimeConversion)
-    print df
+
+#    print getHTML("https://github.com/aaronsw/html2text")
+
+
+
+#df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
+    #df['last_visit_time'] = df['last_visit_time'].apply(dateTimeConversion)
+    #print df
     
 if __name__=='__main__':
 
