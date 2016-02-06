@@ -33,9 +33,10 @@ def dateTimeConversion(unixtime):
     return convertedTime
 
 
-#newFile = open('cleanHistory.txt', 'w')
-#newFile.write(urlList)
-#newFile.close()
-#
-    
-    
+def main():
+    pass
+
+
+if __name__=='__main__':
+
+    main()
