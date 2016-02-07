@@ -30,9 +30,13 @@
         <div>
             <div><h2>My ProcrastinApp</h2></div>
             <div><h1>HOW MUCH TIME DO YOU WASTE ON SOCIAL MEDIA?</h1></div>
-            <form id="inputbox">
+            
                 <div class="input-list style-1 clearfix">
                       <input type="text" placeholder="Input your computer username.">
+        
+
+                        
+                        
                 </div>
             </form>
             </div>
@@ -61,5 +65,22 @@
         <script type="text/javascript">
             app.initialize();
         </script>
+
+
+
+                    <script>
+ $(".input-list.style-1.clearfix input").keypress(function (e) {
+        console.log(e.keyCode);
+             var code = e.keyCode ? e.keyCode : e.which;
+             if (code.toString() == 13) {
+                QLSearch(); // call the function to redirect to another page
+                 return false;
+             }
+     });
+
+// Function that redirect the user to another page
+function QLSearch() {
+          window.location.href = "file:///Users/adelinetan/Desktop/procrastinapp/www/indexdata.html";
+}       </script>
     </body>
 </html>

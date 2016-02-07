@@ -64,6 +64,11 @@ input[type="text"] {
     text-align: center;
 }
 
+#add{
+
+    
+}
+
 input[type="text"]:focus {
     outline: none;
 }

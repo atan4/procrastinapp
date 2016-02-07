@@ -24,19 +24,19 @@ body {
     
 }
 
+
+ 
 #firstimg{
     padding-left: 5%;
     padding-top: 1%;
     padding-bottom: 4%;
-    flex-flow: column
-    display: flex;
-    align-items: left;
+    overflow-x: auto;
 }
 
 #two{
-       display: flex;
-    align-items: right;
-    
+    position: relative;
+    float: right;
+    bottom: 20 px;
 }
 
 
@@ -67,6 +67,8 @@ body {
 	-webkit-animation-duration:1s;
 	-moz-animation-duration:1s;
 	animation-duration:1s;
+    
+    
 }
  
 .fade-in.one {
@@ -99,6 +101,7 @@ padding-top:
 -webkit-animation-delay: 1.2s;
 -moz-animation-delay:1.2s;
 animation-delay: 1.2s;
+    
 }
 
 #firstimg{
@@ -120,6 +123,7 @@ animation-delay: 2.8s;
 #graph3{
     padding: 5%;
     background-color: white;
+    
 }
 
 #graph4{
