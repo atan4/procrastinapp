@@ -5,6 +5,7 @@
 import requests
 import urllib
 from bs4 import BeautifulSoup
+import Procrastinapp
 
 
 def getText(url):
@@ -30,4 +31,16 @@ def getType(url):
     if r.text[0] == '{':
         return r.text[31:-2]
 
+
 #print getType('http://www.huffingtonpost.com/')
+
+#print 'x'
+def top3categories(df):
+    '''takes a dataframe and changes it, adds category'''
+    df['category'] = df['url'].apply(classify.getType)
+    grouped = df['visit_count'].groupby('category').sum()
+
+    
+#dataf = Procrastinapp.fromTextToPickle('msvanberg@wellesley.edu', 'History.txt') 
+
+#print top3categories(dataf)
