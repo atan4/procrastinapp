@@ -1,10 +1,19 @@
+# Anne Schwartz, Adrianna Tan, Maja Svanberg
+# ProcrastinApp.py
+# Hack @ Smith
+# 2o16-o2-o6
+
 import sqlite3
 import pandas.io.sql as sql
 from pandas import *
 import datetime
 import urllib
+<<<<<<< HEAD
 import collections
 from operator import itemgetter
+=======
+import classify
+>>>>>>> 5015b8b64deec05fc92c8635a6e165a10b1775fc
 
 def fromTextToPickle(email,filename):
     
@@ -54,6 +63,10 @@ def dateTimeConversion(unixtime):
     convertedTime = time.isoformat()
     return convertedTime
 
+def addCategories(df):
+    '''takes a dataframe and changes it, adds category'''
+    df['category'] = df['url'].apply(classify.getType)
+
 def fillDict():
     count = 1
     twentyFour = {}
@@ -64,6 +77,30 @@ def fillDict():
     
 dayDict = fillDict()
 
+<<<<<<< HEAD
+=======
+def mostCommonTimes(email,filename):
+    for entry in fromTextToPickle(email,filename)['last_visit_time']:
+        for key in dayDict:
+            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
+                dayDict[key] += 1
+    return dayDict
+
+def mostCommonSites(email,filename):
+    popularDict = {}
+    for url in fromTextToPickle(email,filename)['url']:
+        if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] not in popularDict:
+            popularDict[url.split('/')[2]] = 0
+     
+    return popularDict
+
+def mostCommonSitesFilled(email,filename):
+    for url in fromTextToPickle(email,filename)['url']:
+        for key in mostCommonSites(email,filename).keys():
+            if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] == key: 
+                popularDict[key] += 1   
+    
+>>>>>>> 5015b8b64deec05fc92c8635a6e165a10b1775fc
 
         
 #def mostCommonTimes(email,filename):
@@ -82,6 +119,7 @@ def main():
 #    pass
 #    print getHTML("https://github.com/aaronsw/html2text")
 
+<<<<<<< HEAD
 
 
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
@@ -89,6 +127,16 @@ def main():
     #times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
 
     print df
+=======
+    #df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
+    #dh = df.head()
+    #addCategories(dh)
+    #print dh
+    times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
+    sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
+    #print len(sites)
+    #print df
+>>>>>>> 5015b8b64deec05fc92c8635a6e165a10b1775fc
 
     
 if __name__=='__main__':
