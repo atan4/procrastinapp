@@ -1,3 +1,8 @@
+# Anne Schwartz, Adrianna Tan, Maja Svanberg
+# ProcrastinApp.py
+# Hack @ Smith
+# 2o16-o2-o6
+
 import sqlite3
 import pandas.io.sql as sql
 from pandas import *
@@ -43,8 +48,6 @@ def addCategories(df):
     '''takes a dataframe and changes it, adds category'''
     df['category'] = df['url'].apply(classify.getType)
 
-
-
 def fillDict():
     count = 1
     twentyFour = {}
@@ -70,7 +73,6 @@ def mostCommonSites(email,filename):
      
     return popularDict
 
-
 def mostCommonSitesFilled(email,filename):
     for url in fromTextToPickle(email,filename)['url']:
         for key in mostCommonSites(email,filename).keys():
@@ -84,9 +86,7 @@ def main():
 #    pass
 #    print getHTML("https://github.com/aaronsw/html2text")
 
-
-
-    df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
+    #df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
     #dh = df.head()
     #addCategories(dh)
     #print dh
