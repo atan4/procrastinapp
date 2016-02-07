@@ -3,6 +3,7 @@ import pandas.io.sql as sql
 from pandas import *
 import datetime
 import urllib
+import classify
 
 def fromTextToPickle(email,filename):
     
@@ -37,6 +38,12 @@ def dateTimeConversion(unixtime):
     # formats it into calendar format
     convertedTime = time.isoformat()
     return convertedTime
+
+def addCategories(df):
+    '''takes a dataframe and changes it, adds category'''
+    df['category'] = df['url'].apply(classify.getType)
+
+
 
 def fillDict():
     count = 1
@@ -80,9 +87,12 @@ def main():
 
 
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
+    #dh = df.head()
+    #addCategories(dh)
+    #print dh
     times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
     sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
-    print len(sites)
+    #print len(sites)
     #print df
 
     
