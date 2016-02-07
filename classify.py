@@ -14,14 +14,19 @@ def getText(url):
     # First get the meta description tag
     description = soup.findAll(attrs={"name":"description"}) 
     if  len(description) != 0:
+        # if such exists, return the content of the first description
         return description[0]['content'].encode('utf-8')
     
 
 def getType(url):
+    '''takes a url as an input and returns the category it belongs to
+    based on meta description'''
     text = getText(url)
+    # calls the datumbox API to categorize content
     prms = {'api_key': '837ea8ebf50b511d618341ad4fb15e88', \
                 'text': text}
     r = requests.get('http://api.datumbox.com/1.0/TopicClassification.json', params =prms)
+    # if text starts with {, returns the category
     if r.text[0] == '{':
         return r.text[31:-2]
 
