@@ -1,9 +1,8 @@
 import sqlite3
-import csv
 import pandas.io.sql as sql
 from pandas import *
 import datetime
-
+import urllib
 
 def fromTextToPickle(email,filename):
     
@@ -72,9 +71,14 @@ def mostCommonSitesFilled(email,filename):
                 popularDict[key] += 1   
     
 
-        
+
 
 def main():
+#    pass
+#    print getHTML("https://github.com/aaronsw/html2text")
+
+
+
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
     times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
     sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
