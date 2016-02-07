@@ -3,6 +3,8 @@ import pandas.io.sql as sql
 from pandas import *
 import datetime
 import urllib
+import collections
+from operator import itemgetter
 
 def fromTextToPickle(email,filename):
     
@@ -15,10 +17,10 @@ def fromTextToPickle(email,filename):
     table = sql.read_sql('select * from urls["url"]',history)
 
     # reduces table into two columns, time of visit, url
-    timeStamps = table[['last_visit_time','url']]
+    timeStamps = table[['last_visit_time','url','visit_count']]
 
     # adds 'email' column to table
-    timeDF = DataFrame(data = timeStamps, columns = ['last_visit_time','url','email'])
+    timeDF = DataFrame(data = timeStamps, columns = ['last_visit_time','url','visit_count','email'])
     # sets email to input email
     timeDF['email'] = email
 
@@ -27,9 +29,23 @@ def fromTextToPickle(email,filename):
     
     #converts unix time to readable times
     timeDF['last_visit_time'] = timeDF['last_visit_time'].apply(dateTimeConversion)
+    
+    # reduces URL to main webpage url
+    def splitIt(url):
+        if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:':
+            return url.split('/')[2]
+        else:
+            return None
+    
+    timeDF['url'] = timeDF['url'].apply(splitIt)
+    
 
+    
+    # sorts by visit count
+    timeDF = timeDF.sort(['visit_count'],ascending = False)
     # returns dataframe
     return timeDF
+
 
 def dateTimeConversion(unixtime):
     #converts 17 digit time stamp
@@ -48,29 +64,18 @@ def fillDict():
     
 dayDict = fillDict()
 
-def mostCommonTimes(email,filename):
-    for entry in fromTextToPickle(email,filename)['last_visit_time']:
-        for key in dayDict:
-            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
-                dayDict[key] += 1
-    return dayDict
 
-def mostCommonSites(email,filename):
-    popularDict = {}
-    for url in fromTextToPickle(email,filename)['url']:
-        if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] not in popularDict:
-            popularDict[url.split('/')[2]] = 0
-     
-    return popularDict
+        
+#def mostCommonTimes(email,filename):
+#    for entry in fromTextToPickle(email,filename)['last_visit_time']:
+#        for key in dayDict:
+#            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
+#                dayDict[key] += 1
+#    return dayDict
 
 
-def mostCommonSitesFilled(email,filename):
-    for url in fromTextToPickle(email,filename)['url']:
-        for key in mostCommonSites(email,filename).keys():
-            if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] == key: 
-                popularDict[key] += 1   
+
     
-
 
 
 def main():
@@ -80,10 +85,10 @@ def main():
 
 
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
-    times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
-    sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
-    print len(sites)
-    #print df
+    
+    #times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
+
+    print df
 
     
 if __name__=='__main__':
