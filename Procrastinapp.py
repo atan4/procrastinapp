@@ -9,9 +9,9 @@ from pandas import *
 import datetime
 import urllib
 import collections
-from operator import 
+from operator import *
 import classify
-
+from ggplot import *
 
 def fromTextToPickle(email,filename):
     
@@ -40,7 +40,7 @@ def fromTextToPickle(email,filename):
     # reduces URL to main webpage url
     def splitIt(url):
         if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:':
-            return url.split('/')[2]
+            return '/'.join(url.split('/')[:3])
         else:
             return None
     
@@ -74,20 +74,20 @@ def fillDict():
     return twentyFour
     
 dayDict = fillDict()
-
-
-
-        
-#def mostCommonTimes(email,filename):
-#    for entry in fromTextToPickle(email,filename)['last_visit_time']:
-#        for key in dayDict:
-#            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
-#                dayDict[key] += 1
-#    return dayDict
-
-
-
     
+def mostCommonTimes(email,filename):
+    for entry in fromTextToPickle(email,filename)['last_visit_time']:
+        for key in dayDict:
+            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
+                dayDict[key] += 1
+    return dayDict
+
+def top3categories(df):
+    '''takes a dataframe and changes it, adds category'''
+    df['category'] = df['url'].apply(classify.getType)
+    grouped = df['visit_count'].groupby(df['category']).sum()
+    return grouped
+
 
 
 def main():
@@ -95,20 +95,22 @@ def main():
 #    print getHTML("https://github.com/aaronsw/html2text")
 
 
-
-    print df
+    gg = ggplot(aes(x='Hour of the day', y = 'Amount of online activity (sites visited)'), \
+               data=mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')) +\
+               geom_bar()    
+    print gg
+    #print df
 
     #df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
-    #dh = df.head()
+    #print top3categories(df.head())
+#dh = df.head()
     #addCategories(dh)
     #print dh
-    times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
-    sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
+    #times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
+    #sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
     #print len(sites)
     #print df
 
-
-    
 if __name__=='__main__':
 
     main()
