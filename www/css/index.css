@@ -26,7 +26,7 @@ body {
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     font-family: Arial, Helvetica; 
-    background-color: #e0e0e0;
+    background-color: rgba(51,198,198,1);
     height:100%;
     margin:0px;
     padding:0;
@@ -44,9 +44,10 @@ body {
 
 #frontpage h2{
     background-color: white;
-    font-size: 30px;
-    padding: 1em;
+    font-size: 35px;
+    padding: .6em;
     margin-top: 0;
+    color: rgba(51,198,198,1)
     
 }
 
@@ -74,10 +75,16 @@ input[type="text"]:focus {
     
 }
 
-#notsure:hover {
-    color: rgba(180,180,180,1);
+a:hover {
+    color: paleturquoise;
     
 }
+
+a {
+    color: white;
+}
+
+
 
 /*       IDK WHAT THIS IS HELP  */
 
@@ -88,6 +95,7 @@ input[type="text"]:focus {
   margin: 0 auto;
   padding: 2%;
   text-align: center;
+  
 }
 
 
@@ -154,11 +162,9 @@ input[type="text"]:focus {
 
 
 
-/* FOR BUTTON
 button { border: 1px solid #999; color: #555; background-color: #F4F4FA; padding: 0 10px; }
 button:hover { background-color: white; }
 input[type=text], input:not([type]) { padding: 0 10px; text-overflow: ellipsis; }
-*/
 
 /* Main page structure and masthead style */
 #wrapper { max-width: 800px; margin: auto; padding: 30px 10px 10px 10px; }
@@ -189,4 +195,3 @@ header h2 { text-transform: uppercase; font-weight: normal; color: white; font-s
 footer { text-align: center; font-size: 0.8em; margin-top: 20px; }
 footer a { color: #666; display: block; }
 #errorlog { color: red; font-weight: bold; padding: 8px; display: inline-block; text-align: left; }
-
