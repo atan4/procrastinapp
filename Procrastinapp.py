@@ -3,6 +3,7 @@ import pandas.io.sql as sql
 from pandas import *
 import datetime
 import urllib
+import classify
 
 def fromTextToPickle(email,filename):
     
@@ -24,6 +25,9 @@ def fromTextToPickle(email,filename):
 
     # stores table as file
     timeDF.to_pickle(email.split('@')[0] + '_pickle.pkl')
+    
+    #converts unix time to readable times
+    timeDF['last_visit_time'] = timeDF['last_visit_time'].apply(dateTimeConversion)
 
     # returns dataframe
     return timeDF
@@ -35,10 +39,46 @@ def dateTimeConversion(unixtime):
     convertedTime = time.isoformat()
     return convertedTime
 
-def getHTML(url):
-    """Takes a url and returns a string version of the html file"""
-    page = urllib.urlopen(url).read()
-    return page
+def addCategories(df):
+    '''takes a dataframe and changes it, adds category'''
+    df['category'] = df['url'].apply(classify.getType)
+
+
+
+def fillDict():
+    count = 1
+    twentyFour = {}
+    while count <= 24:
+        twentyFour[count] = 0
+        count += 1
+    return twentyFour
+    
+dayDict = fillDict()
+
+def mostCommonTimes(email,filename):
+    for entry in fromTextToPickle(email,filename)['last_visit_time']:
+        for key in dayDict:
+            if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
+                dayDict[key] += 1
+    return dayDict
+
+def mostCommonSites(email,filename):
+    popularDict = {}
+    for url in fromTextToPickle(email,filename)['url']:
+        if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] not in popularDict:
+            popularDict[url.split('/')[2]] = 0
+     
+    return popularDict
+
+
+def mostCommonSitesFilled(email,filename):
+    for url in fromTextToPickle(email,filename)['url']:
+        for key in mostCommonSites(email,filename).keys():
+            if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] == key: 
+                popularDict[key] += 1   
+    
+
+
 
 def main():
 #    pass
@@ -47,8 +87,14 @@ def main():
 
 
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
-    df['last_visit_time'] = df['last_visit_time'].apply(dateTimeConversion)
-    print df
+    #dh = df.head()
+    #addCategories(dh)
+    #print dh
+    times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
+    sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
+    #print len(sites)
+    #print df
+
     
 if __name__=='__main__':
 
