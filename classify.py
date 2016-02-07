@@ -12,7 +12,7 @@ def getText(url):
     html_text = urllib.urlopen(url).read()
     soup = BeautifulSoup(html_text, 'html.parser')
     # First get the meta description tag
-    description = soup.findAll(attrs={"name":"description"}) 
+    description = soup.findAll(attrs={"name":["description", "Description"]}) 
     if  len(description) != 0:
         # if such exists, return the content of the first description
         return description[0]['content'].encode('utf-8')
@@ -30,3 +30,4 @@ def getType(url):
     if r.text[0] == '{':
         return r.text[31:-2]
 
+#print getType('http://www.huffingtonpost.com/')
