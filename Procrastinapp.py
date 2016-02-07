@@ -9,6 +9,11 @@ from pandas import *
 import datetime
 import classify
 import matplotlib.pyplot as plt
+from flask import Flask, request, session, g, redirect, url_for, abort, \
+     render_template, flash
+
+          
+app = Flask(__name__)
 
 def fromTextToPickle(email,filename):
     
@@ -192,7 +197,7 @@ def dailyPlot(email, filename):
     # save figure
     fig.savefig('figure1.png')
 
-
+@app.route('/')
 def main():
 
     gg = dailyPlot('msvanberg@wellesley.edu', 'History.txt')
@@ -205,4 +210,5 @@ def main():
 
 
 if __name__=='__main__':
+    #app.run()
     main()

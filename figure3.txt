@@ -1,0 +1,4 @@
+                   category  visit_count
+0                    "Arts"        25492
+1  "Computers & Technology"        17898
+2                     Other        14868

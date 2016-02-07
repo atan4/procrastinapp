@@ -1,0 +1,6 @@
+                                url visit_count
+0         https://www.facebook.com/       25492
+1          https://docs.google.com/       14868
+2          https://mail.google.com/        6936
+3           https://www.google.com/        6810
+4  https://0.talkgadget.google.com/        4152
