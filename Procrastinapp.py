@@ -7,16 +7,14 @@ import sqlite3
 import pandas.io.sql as sql
 from pandas import *
 import datetime
-import urllib
-import collections
-from operator import *
 import classify
-from ggplot import *
+import matplotlib.pyplot as plt
 
 def fromTextToPickle(email,filename):
     
     # translating the .txt file
     history = sqlite3.connect(filename)
+    
     # connects sqlite into a dataframe
     h = history.cursor()
 
@@ -40,14 +38,12 @@ def fromTextToPickle(email,filename):
     # reduces URL to main webpage url
     def splitIt(url):
         if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:':
-            return '/'.join(url.split('/')[:3])
+            return '/'.join(url.split('/')[:3]) + '/'
         else:
             return None
     
     timeDF['url'] = timeDF['url'].apply(splitIt)
-    
 
-    
     # sorts by visit count
     timeDF = timeDF.sort(['visit_count'],ascending = False)
     # returns dataframe
@@ -65,52 +61,148 @@ def addCategories(df):
     '''takes a dataframe and changes it, adds category'''
     df['category'] = df['url'].apply(classify.getType)
 
-def fillDict():
+#makes a dictionary with 24 spaces (one for each hour of the day)
+def fillDict(): 
     count = 1
     twentyFour = {}
     while count <= 24:
         twentyFour[count] = 0
         count += 1
     return twentyFour
-    
-dayDict = fillDict()
-    
+
+#fills the dictionary values with the number of sites visited in that hour (key)      
 def mostCommonTimes(email,filename):
+    dayDict = fillDict()
     for entry in fromTextToPickle(email,filename)['last_visit_time']:
         for key in dayDict:
+            #splits the timestamp so only the hour 
             if key == int(entry.split('T')[1].split('.')[0].split(':')[0]):
                 dayDict[key] += 1
     return dayDict
-
+    
+def top5websites(df):
+    '''takes a datafram and returns the 10 most used websites'''
+    # take the dataframe, group it by url and summarize
+    grouped = df['visit_count'].groupby(df['url']).sum()
+    # sort visit_count
+    grouped['visit_count'] = grouped.sort(['visit_count'], ascending = False)
+    # put the series into a dataframe for further analysis
+    df = DataFrame({'url':grouped.index, 'visit_count':grouped.values})
+    # write to textfile
+    text_file = open("figure2.txt", "w")
+    text_file.write(str(df.head()))
+    text_file.close()
+    # return head of data frame
+    return df.head()
+    
 def top3categories(df):
     '''takes a dataframe and changes it, adds category'''
+    # get the categories based on the urls
     df['category'] = df['url'].apply(classify.getType)
+    # group visit counts by category and summarize
     grouped = df['visit_count'].groupby(df['category']).sum()
-    return grouped
+    # make dataframe from series
+    df = DataFrame({'category':grouped.index, 'visit_count':grouped.values})
 
+    #fixes missing parameter error from classify
+    def errorFix(string):
+        if len(string) >= 30:
+            string = 'Other'
+        return string
+    # make sure error enters 'other'
+    df['category'] = df['category'].apply(errorFix)
+    
+    # write to text file
+    text_file = open("figure3.txt", "w")
+    text_file.write(str(df))
+    text_file.close()
+    
+    # return data frame
+    return df
+    
+def findValue(string):
+    '''returns value based on which category. the results are from
+    a survey conducted online in a wellesley college community. 'other' 
+    is categories as a 3, neutral on a scale'''
+    if string == 'Arts':
+        return 2.58
+    elif string == 'Business & Economy':
+        return 2.36
+    elif string == 'News':
+        return 1.96
+    elif string == 'Computers & Technology':
+        return 2.12
+    elif string == 'Home & Domestic Life':
+        return 3.2
+    elif string == 'Health':
+        return 2.08
+    elif string == 'Reference & Education':
+        return 1.76
+    elif string == 'Recreation & Activities':
+        return 2.68
+    elif string == 'Science':
+        return 1.8
+    elif string == 'Shopping':
+        return 3.76
+    elif string == 'Society':
+        return 3.08
+    elif string == 'Sports':
+        return 3.44
+    else:
+        return 3
+    
+def procrastinationValue(df):
+    '''takes a data frame category/visit_count and returns to 
+    a string and stores in a file a sentence describing the users
+    procrastination rate'''
+    # transform categoy into value
+    df['category'] = df['category'].apply(findValue)
+    # calculate provalue as categoryvalue * visit_count
+    df['provalue'] = df['category']*df['visit_count']
+    # store provalue as sum of provalues over sum of visit counts
+    provalue = df['provalue'].sum()/df['visit_count'].sum()
+    string = 'Your procrastination rate is: ' + str(provalue-1) + \
+        ', on a scale from 0-4.'
+    # saves string in .txt
+    text_file = open("figure4.txt", "w")
+    text_file.write(string)
+    text_file.close()
+    # returns string
+    return string 
+    
+#makes a line plot of the daily activity (number of sites visited at different hours)
+def dailyPlot(email, filename):
+    # define most common times
+    gg = mostCommonTimes(email, filename)
+    # define x list and y list
+    xlist = gg.keys() 
+    ylist = gg.values()
+    # initialize figure
+    fig = plt.figure()
+    # plot the thing
+    plt.title('Daily Online Activity')
+    plt.ylabel('number of sites visited')
+    plt.xlabel('Time (24 Hour GMT)')
+    # on a scale from 0 to 23 (24 in total), and 0 to max+200
+    plt.axis([0,max(xlist)-2,0,max(ylist)+200])
+    plt.plot(xlist)
+    plt.plot(ylist)
+    # display plot in kernel
+    plt.show()
+    # save figure
+    fig.savefig('figure1.png')
 
 
 def main():
-#    pass
-#    print getHTML("https://github.com/aaronsw/html2text")
 
+    gg = dailyPlot('msvanberg@wellesley.edu', 'History.txt')
+    df = top5websites(fromTextToPickle('msvanberg@wellesley.edu', 'History.txt'))
+    print df
+    top = top3categories(df)
+    print top
+    value = procrastinationValue(top)
+    print value
 
-    gg = ggplot(aes(x='Hour of the day', y = 'Amount of online activity (sites visited)'), \
-               data=mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')) +\
-               geom_bar()    
-    print gg
-    #print df
-
-    #df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
-    #print top3categories(df.head())
-#dh = df.head()
-    #addCategories(dh)
-    #print dh
-    #times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
-    #sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
-    #print len(sites)
-    #print df
 
 if __name__=='__main__':
-
     main()
