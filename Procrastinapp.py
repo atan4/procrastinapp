@@ -56,12 +56,29 @@ def mostCommonTimes(email,filename):
                 dayDict[key] += 1
     return dayDict
 
+def mostCommonSites(email,filename):
+    popularDict = {}
+    for url in fromTextToPickle(email,filename)['url']:
+        if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] not in popularDict:
+            popularDict[url.split('/')[2]] = 0
+     
+    return popularDict
 
+
+def mostCommonSitesFilled(email,filename):
+    for url in fromTextToPickle(email,filename)['url']:
+        for key in mostCommonSites(email,filename).keys():
+            if url.split('/')[0] == 'http:' or url.split('/')[0] == 'https:' and url.split('/')[2] == key: 
+                popularDict[key] += 1   
+    
+
+        
 
 def main():
     df = fromTextToPickle('msvanberg@wellesley.edu', 'History.txt')
     times = mostCommonTimes('msvanberg@wellesley.edu', 'History.txt')
-    print times
+    sites = mostCommonSites('msvanberg@wellesley.edu', 'History.txt')
+    print len(sites)
     #print df
 
     
